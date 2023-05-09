@@ -10,20 +10,12 @@ f.	needs to know what the most demanded products for each time of the day are.
 2. STEPS USED TO COMPLETE THE PROJECT
 
 a. Restore the existing backup database:
-The first step I took was to restore the database and create a conceptual, logical and the physical relational models to conform to requirements specification.
+The first step I took was to restore the database and create a conceptual, logical and the physical relational models to conform to requirements specification. Figure 1 shows the conceptual data model
 
 Figure 1: Conceptual Data Model
 ![image](https://user-images.githubusercontent.com/99350558/234389121-bc526e05-3f7d-46f8-b21b-d8cf11eaf995.png)
 
 
-
-Figure 2: Logical Data Model
-![image](https://user-images.githubusercontent.com/99350558/234389231-402c6897-9c93-4a75-9087-2def739b073e.png)
-
-
-
-Figure 3: Physical Data Model
-![image](https://user-images.githubusercontent.com/99350558/234393596-60789efb-1e16-4f2e-acdc-d0d768b6134d.png)
 
 
 b. Create the ETL pipelines:
@@ -31,7 +23,7 @@ I used the dimensional modelling technique invented by Ralph Kimball to design m
 
 Next, I wrote optimized SQL queries to extract the data from the OLTP, transform and then loaded the data into the staging environment. I then created another pipeline to load and truncate the data from the staging into the Data Warehouse. To account for any data loss during the ETL process, we included a data pre-count, destination count, current count, Type 1 count, type 2 count, and a post count to help track the data movement.
 
-Figure 4: Star Schema showing the fact and the associated dimension tables.
+Figure 4: Star Schema showing the fact and some of the associated dimension tables.
 ![image](https://user-images.githubusercontent.com/99350558/234393970-71de0994-e926-4e5a-aa08-223061cdcf27.png)
 
 
