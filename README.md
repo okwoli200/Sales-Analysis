@@ -1,6 +1,6 @@
 # Sales-Analysis Overview 
 PROJECT OVERVIEW:
-In this project, our main objective was to develop a comprehensive ETL (Extract, Transform, Load) pipeline that facilitated the extraction, transformation, and loading of data from diverse sources into Staging and Production SQL Server Databases. To accomplish this, we employed optimized SQL queries and data extraction scripts within SQL Server Management Studio (SSMS). Furthermore, we utilized SQL Server Analysis Services (SSAS) to construct cubes for multi-dimensional analysis. These summary cubes played a vital role in generating interactive dashboards and data visualizations, enabling informed decision-making based on insightful data analysis.
+In this project, my main objective was to develop a comprehensive ETL (Extract, Transform, Load) pipeline that facilitated the extraction, transformation, and loading of data from diverse sources into Staging and Production SQL Server Databases. To accomplish this, I employed optimized SQL queries and data extraction scripts within SQL Server Management Studio (SSMS). Furthermore, I utilized SQL Server Analysis Services (SSAS) to construct cubes for multi-dimensional analysis. These summary cubes played a vital role in generating interactive dashboards and data visualizations, enabling informed decision-making based on insightful data analysis.
 
 1. Business Scenario:
 An ETL Developer is needed by a Grocery store to carry out data migration from various sources to a centralized data warehouse. Additionally, the developer is tasked with creating a dashboard that will assist the Sales Manager in achieving the following objectives:
@@ -66,7 +66,7 @@ By connecting Power BI to the analysis cubes, I gained access to the summarized 
 
 Using a user-friendly interface, I designed intuitive dashboards that presented the data in a visually appealing and interactive manner. These dashboards enabled end-users, including sales managers and other stakeholders, to easily explore and analyze the data, gain valuable insights, and make informed decisions.
 
-I customized the visualizations based on the specific requirements of the analytical problems we aimed to solve. This involved selecting the appropriate chart types, configuring filters and slicers for data segmentation, and creating drill-down capabilities to explore the data at various levels of detail.
+I customized the visualizations based on the specific requirements of the analytical problems I aimed to solve. This involved selecting the appropriate chart types, configuring filters and slicers for data segmentation, and creating drill-down capabilities to explore the data at various levels of detail.
 
 Furthermore, I incorporated interactive features such as tooltips, highlighting, and drill-through actions to enhance the user experience and provide additional context and details when interacting with the visualizations.
 
