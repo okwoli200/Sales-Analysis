@@ -1,5 +1,5 @@
 -------ETL Control Framework-------
------------Create Control database-----
+-----------Create Control database----------
 IF NOT EXISTS(SELECT Name FROM sys.databases WHERE Name = 'TescaControl')
 	CREATE DATABASE TescaControl
 ELSE
@@ -9,7 +9,7 @@ use TescaControl
 CREATE SCHEMA Control
 
 
-----------Staging, Warehose Environment----------
+----------Staging and Warehouse Environment----------
 CREATE TABLE Control.Environment
 (
 EnvironmentID int,
@@ -90,7 +90,7 @@ values
 		(11, 'dimCustomer.dtsx', 1, 400,2,1, convert(date, getdate()),1),
 		(12, 'dimPOSChannel.dtsx', 1, 500,2,1, convert(date, getdate()),1),
 		(13, 'dimEmployee.dtsx', 1, 600,2,1, convert(date, getdate()),1),
-		(14, 'FactSalesAnalysis.dtsx', 2, 1100,2,1, convert(date, getdate()),1)
+		(14, 'FactSalesAnalysis.dtsx', 2, 700,2,1, convert(date, getdate()),1)
 
 
 --------- Control Metrics----------
@@ -149,7 +149,7 @@ Constraint anomalies_package_fk foreign key(PackageID) references control.Packag
 )
 
 
------Control Framework for stagging-----------
+----------Control Framework for stagging-----------
 SELECT PackageID, PackageName, SequenceNo FROM(
 	SELECT PackageID, PackageName, SequenceNo, FrequencyID FROM Control.Package
 	WHERE (Active = 1 AND RunStartDate <= convert(date,getdate()))
@@ -174,7 +174,7 @@ SELECT PackageID, PackageName, SequenceNo FROM(
 ) RunP ORDER BY FrequencyID, SequenceNo
 
 
------Control Framework for the Data Warehouse---------
+----------Control Framework for the Data Warehouse-----------
 SELECT PackageID, PackageName, SequenceNo FROM(
 	SELECT PackageID, PackageName, SequenceNo, FrequencyID FROM Control.Package
 	WHERE (Active = 1 AND RunStartDate <= convert(date,getdate()))
