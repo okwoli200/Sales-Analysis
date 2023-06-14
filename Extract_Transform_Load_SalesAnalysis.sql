@@ -1,26 +1,24 @@
----Create Staging DataBase
-CREATe database TescaStagging
-
- IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'TescaStaging')
+---------Create Staging DataBase-----------
+IF NOT EXISTS (SELECT Name FROM sys.databases WHERE Name = 'TescaStaging')
 	CREATE DATABASE TescaStaging
 ELSE
 	Print ('database already exist')
 
 
-----Create DataWarehouse DataBase
+--------Create DataWarehouse DataBase----------
 
  IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'TescaEDW')
 	CREATE DATABASE TescaEDW
 ELSE
 	Print ('database already exist')
 
-------Create Control Database
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'TescaControl')
+-----------Create Control Database-----------
+IF NOT EXISTS (SELECT Name FROM sys.databases WHERE Name = 'TescaControl')
 	CREATE DATABASE TescaControl
 ELSE
 	Print ('database already exist')
 
----Create the Schemas
+----------Create the Schemas-------------
 USE TescaStagging
 CREATE SCHEMA Stagging
 
@@ -29,8 +27,7 @@ USE [TescaEDW]
 CREATE SCHEMA EDW
 
 
------------------ Creating the Date Dimesion Table-------
-Drop table Edw.DimDate
+------------ Creating the Date Dimesion Table-----------
 CREATE TABLE EDW.DimDate
 (
 DateSK int,    
@@ -48,13 +45,12 @@ LoadDate datetime default getdate(),
 Constraint edw_dimdate_sk Primary key (DateSK)
 )
 
------ insert Dta dynamically into the Date table using a stored Procedure
+-----Dynamically Insert Data  into the Date table using a stored Procedure-----
 
-Create or alter procedure EDW.DateGenerator(@endDate date)
+Create or Alter procedure EDW.DateGenerator(@endDate date)
 AS
 BEGIN
 SET NOCOUNT ON
---Declare @EndDate date = '2090-12-31'
 	declare @StartDate date =  (SELECT MIN(CONVERT(DATE, minDate)) FROM
 		(SELECT MIN(TRANSDATE) AS minDate FROM TescaOLTP.dbo.SalesTransaction
 		union ALL
@@ -89,9 +85,9 @@ SET NOCOUNT ON
 			when 6 then 'Viernes' when 7 then 'Sabado'
 			END, 
 		CASE DATEPART(MONTH, @CurrentDate)
-			WHEN 1 THEN 'Janvier' when 2 THEN 'Février' when 3 then 'mars' WHEN 4 THEN 'Avril' WHEN 5 THEN 'Mai'
-			WHEN 6 THEN 'JUIN' WHEN 7 THEN 'Juillet' WHEN 8 THEN 'Août' when 9 then 'Septembre' when 10 then 'Octobre'
-			WHEN 11 THEN 'Novembre' when 12 then 'Décembre' 
+			WHEN 1 THEN 'Janvier' when 2 THEN 'FÃ©vrier' when 3 then 'mars' WHEN 4 THEN 'Avril' WHEN 5 THEN 'Mai'
+			WHEN 6 THEN 'JUIN' WHEN 7 THEN 'Juillet' WHEN 8 THEN 'AoÃ»t' when 9 then 'Septembre' when 10 then 'Octobre'
+			WHEN 11 THEN 'Novembre' when 12 then 'DÃ©cembre' 
 		END,
 		CASE DATEPART(WEEKDAY, @CurrentDate)
 			WHEN 1 THEN 'Dimanche' when 2 then 'Lundi' when 3 then 'Mardi' when 4 then 'Mercredi' when 5 then 'Jeudi'
@@ -104,13 +100,13 @@ END
 
 
 
------------------ Creating the Time Dimesion Table-------
+----------------- Creating the Time Dimesion Table------------
 USE TescaEDW
-Create Table EDW.dimTime
+Create Table EDW.DimTime
  (
    TimeSK int identity(1,1),
    TimeHour int,   ---- 0  to 23
-   TimeInterval nvarchar(20) not null, --- 00:00-00:59, 01:00-01:59, 
+   TimeInterval nvarchar(20) not null, 
    BusinessHour nvarchar(20) not null,
    PeriodofDay  nvarchar(20) not null,
    LoadDate datetime default getdate(),
@@ -118,8 +114,8 @@ Create Table EDW.dimTime
  )
 
 
- ----- insert Dta dynamically into the Time dimension table using a stored Procedure
-Create or alter procedure EDW.dimTimeGenerator
+ ---------Insert Data dynamically into the Time dimension table using a stored Procedure----------
+Create or Alter procedure EDW.dimTimeGenerator
 AS
 BEGIN
 SET NOCOUNT ON
@@ -150,13 +146,12 @@ SET NOCOUNT ON
  END
 END
 
-exec EDW.dimTimeGenerator
- select * from EDW.dimTime
+exec EDW.dimTimeGenerator '20301231'
+
 
 
 -----Product Dimesion from OLTP----
 USE [TescaOLTP]
-
 SELECT P.ProductID,P.Product, P.ProductNumber, p.UnitPrice, D.Department, getdate() as LoadDate
 FROM PRODUCT P
 INNER JOIN Department D ON P.DepartmentID = D.DepartmentID
@@ -165,12 +160,12 @@ SELECT Count(*) AS SourceCount
 FROM PRODUCT P
 INNER JOIN Department D ON P.DepartmentID = D.DepartmentID
 
-------Product Staging---
-use [TescaStaging]
+---------Product Staging---------
+USE TescaStaging
 
 CREATE TABLE Staging.Product
 	(
-	ProductID INT,
+	ProductID int,
 	Product nvarchar(50),
 	ProductNumber nvarchar(50),
 	UnitPrice float,
@@ -180,15 +175,14 @@ CREATE TABLE Staging.Product
 	)
 
 
-SELECT ProductID, Product, ProductNumber, UnitPrice, Department, getdate() as loaddate
+SELECT ProductID, Product, ProductNumber, UnitPrice, Department, getdate() as LoadDate FROM Staging.Product
 
 SELECT COUNT(*) AS DesCount FROM Staging.Product
 
 Truncate Table Staging.Product
 
 
-USE [TescaEDW]
-
+USE TescaEDW
 CREATE TABLE EDW.DimProduct
 	(
 	ProductSk int identity(1,1),
@@ -206,21 +200,20 @@ SELECT COUNT(*) As PreCount FROM EDW.DimProduct
 
 SELECT COUNT(*) As PostCount FROM EDW.DimProduct
 
-git
 
-----------Promotion Dimesion From OLTP-----
+----------Promotion Dimesion From OLTP---------
 USE TescaOLTP
-SELECT P.PromotionID, t.Promotion, p.StartDate, p.EndDate, p.DiscountPercent, getdate() as LoadDate
+SELECT P.PromotionID, T.Promotion, p.StartDate, p.EndDate, p.DiscountPercent, getdate() as LoadDate
 FROM PROMOTION P 
-INNER JOIN PromotionType t ON P.PromotionTypeID = t.PromotionTypeID
+INNER JOIN PromotionType T ON P.PromotionTypeID = T.PromotionTypeID
 
 SELECT COUNT(*) as sourceCount
 FROM PROMOTION P 
-INNER JOIN PromotionType t ON P.PromotionTypeID = t.PromotionTypeID
+INNER JOIN PromotionType T ON P.PromotionTypeID = T.PromotionTypeID
 
 
--------Promotion Stagging
-USE [TescaStaging]
+-------Promotion Staging-----------
+USE TescaStaging
 CREATE TABLE Staging.Promotion
 	(
 	PromotionID INT,
@@ -235,7 +228,7 @@ CREATE TABLE Staging.Promotion
 SELECT PromotionID, Promotion, StartDate, EndDate, DiscountPercent, getdate() AS LoadDate
 FROM Staging.Promotion
 
-SELECT COUNT(*) AS CurrentCount FROM Staging.Promotion
+SELECT COUNT(*) AS DesCount FROM Staging.Promotion
 truncate table staging.promotion
 
 -----Promotion EDW-----
@@ -286,7 +279,7 @@ Constraint staging_store_sk Primary key (storeID)
 SELECT StoreID, StoreName, StreetAddress, CityName, State, getdate as LoadDate FROM staging.store
 SELECT COUNT(*) AS DesCount FROM Staging.Store
 
-Truncate Table Stagging.Store
+Truncate Table Staging.Store
 
 -----EDW Store----
 use TescaEDW
@@ -300,7 +293,7 @@ StreetAddress nvarchar(50),
 CityName nvarchar(50),
 State nvarchar(50),
 EffectiveStartDate datetime,
-Constraint stagging_store_sk Primary key (storeSK)
+Constraint staging_store_sk Primary key (storeSK)
 )
 
 SELECT COUNT(*) AS PreCount FROM EDW.DimStore
@@ -387,13 +380,11 @@ FROM Staging.PoSChannel
 
 SELECT Count(*) AS DesCount FROM Staging.PoSChannel
 
-Truncate TABLE Stagging.PoSChannel
+Truncate TABLE Staging.PoSChannel
 
 
 -----EDW PoSChannel------
-SELECT Count(*) AS CurrentCount FROM Staging.PoSChannel
 USE TescaEDW
-
 CREATE TABLE EDW.DimPoSChannel
 (
 ChannelSK int identity(1,1),
@@ -407,15 +398,13 @@ EffectiveEndDate datetime,
 Constraint EDW_PoSChannel_sk primary key(ChannelSK)
 )
 
-
 SELECT COUNT(*) AS PreCount FROM edw.DimPoSChannel
 SELECT COUNT(*) AS PostCount FROM edw.DimPoSChannel
 
 
-
-----Employee Dimension Table From OLTP 
+---------Employee Dimension Table From OLTP---------- 
 USE TescaOLTP
-SELECT e.EmployeeID, E.EmployeeNo, CONCAT(UPPER(E.LastName), ',', E.FirstName) AS Employee,  E.DoB, m.MaritalStatus
+SELECT E.EmployeeID, E.EmployeeNo, CONCAT(UPPER(E.LastName), ',', E.FirstName) AS Employee,  E.DoB, M.MaritalStatus
 FROM Employee E
 INNER JOIN MaritalStatus M on E.MaritalStatus = M.MaritalStatusID
 
@@ -424,8 +413,8 @@ FROM Employee E
 INNER JOIN MaritalStatus M on E.MaritalStatus = M.MaritalStatusID
 
 
---- Staging Employee-----
-use TescaStaging
+----------Staging Employee----------
+USE TescaStaging
 CREATE TABLE Staging.Employee
 (
 EmployeeID int,
@@ -445,10 +434,10 @@ SELECT COUNT(*) AS DesCount  FROM Staging.Employee
 TRUNCATE TABLE Staging.Employee
 
 
-use TescaEDW
+USE TescaEDW
 CREATE TABLE EDW.DimEmployee
 (
-EmployeeSK INT Identity(1,1),
+EmployeeSK int Identity(1,1),
 EmployeeID int,
 EmployeeNO Nvarchar(50),
 Employee nvarchar(255),
@@ -465,12 +454,10 @@ SELECT COUNT(*) AS PostCount  FROM EDW.dimEmployee
 
 
 
----- Extracting the Sales Analysis (Fact Table) From OLTP 
+----------Extracting the Sales Analysis (Fact Table) From OLTP--------- 
 
 USE TescaOLTP
-
 IF (SELECT COUNT(*) FROM TescaEDW.EDW.Fact_SalesAnalysis)<=0
-
 	SELECT S.TransactionID, S.TransactionNO, DATEPART(HOUR, TransDate) AS TransHour, CONVERT(DATE, S.TransDate) 
 	AS TransDate, convert(date, s.OrderDate) as OrderDate, DATEPART(Hour, s.OrderDate) as OrderHour,
 	convert(date, s.DeliveryDate) as DeliveryDate,
@@ -496,9 +483,9 @@ ELSE
 	SELECT COUNT(*) AS SourceCount FROM SalesTransaction 
 	WHERE convert(date, TransDate) = dateadd(day, -1, convert(date, getdate()))
 
----Staging SalesFact---
-USE TescaStagging
-CREATE TABLE STAGING.SalesAnalysis
+---------Staging SalesFact----------
+USE TescaStaging
+CREATE TABLE Staging.SalesAnalysis
 (
 TransactionID int,
 TransactionNO nvarchar(50),
@@ -520,15 +507,13 @@ LineDiscountAmount float,
 LoadDate datetime default getdate(),
 Constraint Staging_SalesAnalysis_pk primary key (TransactionID)
 )
-SELECT * from Staging.SalesAnalysis
-SELECT COUNT(*) AS Descount FROM Staging.SalesAnalysis 
-Truncate TABLE Staging.SalesAnalysis
-
-
 SELECT TransactionID, TransactionNO, TransHour, TransDate, OrderDate, OrderHour, DeliveryDate, channelID, CustomerID, 
 EmployeeID, ProductID, StoreID, PromotionID, Quantity, TaxAmount, LineAmount, LineDiscountAmount, Getdate() AS LoadDate
 FROM staging.SalesAnalysis
 
+SELECT COUNT(*) AS Descount FROM Staging.SalesAnalysis 
+
+Truncate TABLE Staging.SalesAnalysis
 
 
 ----EDW SalesAnalysis-----
