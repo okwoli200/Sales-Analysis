@@ -1,5 +1,5 @@
 # Sales-Analysis Overview 
-PROJECT OVERVIEW:
+#PROJECT OVERVIEW:
 In this project, my main objective was to develop a comprehensive ETL (Extract, Transform, Load) pipeline that facilitated the extraction, transformation, and loading of data from diverse sources into Staging and Production SQL Server Databases. To accomplish this, I employed optimized SQL queries and data extraction scripts within SQL Server Management Studio (SSMS) and built the ETL pipelines in SSIS Virtual Studio. Furthermore, I utilized SQL Server Analysis Services (SSAS) to construct cubes for multi-dimensional analysis. These summary cubes played a vital role in generating interactive dashboards and data visualizations, enabling informed decision-making based on insightful data analysis.
 
 1. Business Scenario:
