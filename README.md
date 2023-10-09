@@ -1,8 +1,8 @@
 # Sales-Analysis Overview 
-#PROJECT OVERVIEW:
+# PROJECT OVERVIEW:
 In this project, my main objective was to develop a comprehensive ETL (Extract, Transform, Load) pipeline that facilitated the extraction, transformation, and loading of data from diverse sources into Staging and Production SQL Server Databases. To accomplish this, I employed optimized SQL queries and data extraction scripts within SQL Server Management Studio (SSMS) and built the ETL pipelines in SSIS Virtual Studio. Furthermore, I utilized SQL Server Analysis Services (SSAS) to construct cubes for multi-dimensional analysis. These summary cubes played a vital role in generating interactive dashboards and data visualizations, enabling informed decision-making based on insightful data analysis.
 
-1. Business Scenario:
+# 1. Business Scenario:
 An ETL Developer is needed by a Grocery store to carry out data migration from various sources to a centralized data warehouse. Additionally, the developer is tasked with creating a dashboard that will assist the Sales Manager in achieving the following objectives:
 
 a. Tracking Product Movement and Analyzing Sales Impact:
@@ -14,7 +14,7 @@ The Sales Manager seeks to comprehend the combination of products present in a c
 c. Identifying Popular Products Based on Time of Day:
 The Sales Manager needs to determine the most in-demand products during specific times of the day.
 
-2. STEPS USED TO COMPLETE THE PROJECT
+# 2. STEPS USED TO COMPLETE THE PROJECT
 a. Restore the Existing Backup Database:
 To begin the restoration process, I initiated the database restore procedure, ensuring that the backup was successfully restored to its original state. Once the database was restored, I proceeded with the creation of conceptual, logical, and physical relational models that aligned with the specified requirements. Figure 1 below displays the conceptual data model, illustrating the high-level representation of the database structure and relationships.
 
